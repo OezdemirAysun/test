@@ -24,11 +24,37 @@ import entities.AbstractMoveableEntity;
 public class Enemy extends AbstractMoveableEntity {
 	private Texture texture = null;
 
-	public Enemy(double x, double y, double width, double height) {
+	public Enemy(double x, double y, double width, double height, int textureID) {
 		super(x, y, width, height);
 		try {
-			this.texture = TextureLoader.getTexture("JPG", new FileInputStream(
-					new File("res/enemy.jpg")));
+			switch (textureID) {
+			case 0:
+				this.texture = TextureLoader.getTexture("PNG",
+						new FileInputStream(new File("res/enemy.png")));
+				break;
+			case 1:
+				this.texture = TextureLoader.getTexture("PNG",
+						new FileInputStream(new File("res/enemy1.png")));
+				break;
+			case 2:
+				this.texture = TextureLoader.getTexture("PNG",
+						new FileInputStream(new File("res/enemy2.png")));
+				break;
+			case 3:
+				this.texture = TextureLoader.getTexture("PNG",
+						new FileInputStream(new File("res/enemy3.png")));
+				break;
+			case 4:
+				this.texture = TextureLoader.getTexture("PNG",
+						new FileInputStream(new File("res/enemy4.png")));
+				break;
+			case 5:
+				this.texture = TextureLoader.getTexture("PNG",
+						new FileInputStream(new File("res/enemy5.png")));
+				break;
+				
+			}
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -54,12 +80,12 @@ public class Enemy extends AbstractMoveableEntity {
 		glEnd();
 		glLoadIdentity();
 
-//		glColor3f(1, 0, 0);
-//		glBegin(GL_QUADS);
-//		glVertex2d(x, y);
-//		glVertex2d(x + width, y);
-//		glVertex2d(x + width, y + height);
-//		glVertex2d(x, y + height);
-//		glEnd();
+		// glColor3f(1, 0, 0);
+		// glBegin(GL_QUADS);
+		// glVertex2d(x, y);
+		// glVertex2d(x + width, y);
+		// glVertex2d(x + width, y + height);
+		// glVertex2d(x, y + height);
+		// glEnd();
 	}
 }

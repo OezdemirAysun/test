@@ -1,6 +1,5 @@
 package mms;
 
-
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glColor3f;
@@ -29,8 +28,8 @@ public class Obstacle extends AbstractMoveableEntity {
 	public Obstacle(double x, double y, double width, double height) {
 		super(x, y, width, height);
 		try {
-			this.texture = TextureLoader.getTexture("JPG", new FileInputStream(
-					new File("res/obstacle.jpg")));
+			this.texture = TextureLoader.getTexture("PNG", new FileInputStream(
+					new File("res/obstacle.png")));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -55,7 +54,6 @@ public class Obstacle extends AbstractMoveableEntity {
 		glVertex2f(0, (float) height);
 		glEnd();
 		glLoadIdentity();
-
 
 	}
 

@@ -32,14 +32,14 @@ public class Gimmick extends AbstractMoveableEntity {
 		super(x, y, width, height);
 		i = 0;
 		try {
-			this.star1 = TextureLoader.getTexture("JPG", new FileInputStream(
-					new File("res/star1.jpg")));
-			this.star2 = TextureLoader.getTexture("JPG", new FileInputStream(
-					new File("res/star2.jpg")));
-			this.star3 = TextureLoader.getTexture("JPG", new FileInputStream(
-					new File("res/star3.jpg")));
-			this.star4 = TextureLoader.getTexture("JPG", new FileInputStream(
-					new File("res/star4.jpg")));
+			this.star1 = TextureLoader.getTexture("PNG", new FileInputStream(
+					new File("res/star1.png")));
+			this.star2 = TextureLoader.getTexture("PNG", new FileInputStream(
+					new File("res/star2.png")));
+			this.star3 = TextureLoader.getTexture("PNG", new FileInputStream(
+					new File("res/star3.png")));
+			this.star4 = TextureLoader.getTexture("PNG", new FileInputStream(
+					new File("res/star4.png")));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -69,16 +69,12 @@ public class Gimmick extends AbstractMoveableEntity {
 	public void draw2() {
 		if (i < 8) {
 			star1.bind();
-			System.out.println("1");
 		} else if (i < 16) {
 			star2.bind();
-			System.out.println("2");
 		} else if (i < 24) {
 			star3.bind();
-			System.out.println("3");
 		} else {
 			star4.bind();
-			System.out.println("4");
 			if (i == 32) {
 				i = -1;
 			}
