@@ -483,7 +483,7 @@ public class Main {
 				gimColl = false;
 			}
 
-			if (player.getY() < 590) {
+			if (player.getY() < 635) {
 				player.setY(player.getY() + turbo);
 			}
 
