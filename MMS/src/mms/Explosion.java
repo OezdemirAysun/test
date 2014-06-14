@@ -36,6 +36,9 @@ public class Explosion extends AbstractMoveableEntity {
 	private Texture expl11 = null;
 	private Texture expl12 = null;
 	private Texture expl13 = null;
+	private Texture expl14 = null;
+
+	private boolean check = true; 
 	public static final int countExplosion = 13; 
 	private int i;
 	
@@ -68,6 +71,8 @@ public class Explosion extends AbstractMoveableEntity {
 					new File("res/explosion12.png")));
 			this.expl13 = TextureLoader.getTexture("PNG", new FileInputStream(
 					new File("res/explosion13.png")));
+			this.expl14 = TextureLoader.getTexture("PNG", new FileInputStream(
+					new File("res/explosion14.png")));
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -96,41 +101,47 @@ public class Explosion extends AbstractMoveableEntity {
 
 	}
 	
+	
 	public void draw2() {
-		if (i < 8) {
-			expl1.bind();
-		} else if (i < 16) {
-			expl2.bind();
-		} else if (i < 24) {
-			expl3.bind();
-		} else if (i < 40) {
-			expl4.bind();
-		} else if (i < 48) {
-			expl5.bind();
-		} else if (i < 56) {
-			expl6.bind();
-		} else if (i < 64) {
-			expl7.bind();
-		} else if(i < 72){
-			expl8.bind();
-				
-		}else if (i < 80){
-			expl9.bind();
-		}else if(i < 88){
-			expl10.bind();
-		}else if(i < 96){
-			expl11.bind();
-		}else if(i< 102){
-			expl12.bind();
-		}else{
-			expl13.bind();
-			if (i == 110) {
-				i = -1;
+		
+			if (i < 3) {
+				expl1.bind();
+			} else if (i < 6) {
+				expl2.bind();
+			} else if (i < 9) {
+				expl3.bind();
+			} else if (i < 12) {
+				expl4.bind();
+			} else if (i < 15) {
+				expl5.bind();
+			} else if (i <18) {
+				expl6.bind();
+			} else if (i < 21) {
+				expl7.bind();
+			} else if(i < 24){
+				expl8.bind();
+					
+			}else if (i < 26){
+				expl9.bind();
+			}else if(i < 28){
+				expl10.bind();
+			}else if(i < 30){
+				expl11.bind();
+			}else if(i< 32){
+				expl12.bind();
+			}else if (i < 34){
+				expl13.bind();
+			}else{
+				expl14.bind(); 
+				check = false; 
+
 			}
+			
+		
+		if(check){
+			i++;
+
 		}
-		
-		
-		i++;
 		glLoadIdentity();
 		glTranslated(x, y, 0);
 		glBegin(GL_QUADS);
