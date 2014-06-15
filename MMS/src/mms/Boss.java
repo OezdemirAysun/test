@@ -21,6 +21,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import entities.AbstractMoveableEntity;
+import entities.Entity;
 
 public class Boss extends AbstractMoveableEntity {
 	private Texture texture = null;
@@ -36,6 +37,7 @@ public class Boss extends AbstractMoveableEntity {
 			e.printStackTrace();
 		}
 	}
+
 
 	@Override
 	public void draw() {

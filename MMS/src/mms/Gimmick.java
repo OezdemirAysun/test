@@ -20,6 +20,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import entities.AbstractMoveableEntity;
+import entities.Entity;
 
 public class Gimmick extends AbstractMoveableEntity {
 	private Texture star1 = null;
@@ -46,6 +47,13 @@ public class Gimmick extends AbstractMoveableEntity {
 			e.printStackTrace();
 		}
 	}
+//	
+//	@Override
+//	public boolean intersects(Entity other) {
+//		hitbox.setBounds((int) (this.getX()-this.getWidtH()/10) , (int) (this.getY()-this.getHeight()/10), (int) width, (int) height);
+//		return hitbox.intersects(other.getX(), other.getY(), other.getWidtH(),
+//				other.getHeight());
+//	}
 
 	@Override
 	public void draw() {

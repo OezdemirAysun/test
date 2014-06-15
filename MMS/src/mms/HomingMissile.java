@@ -19,6 +19,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import entities.AbstractMoveableEntity;
+import entities.Entity;
 
 public class HomingMissile extends AbstractMoveableEntity {
 	private Texture texture = null;
@@ -34,6 +35,16 @@ public class HomingMissile extends AbstractMoveableEntity {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public boolean intersects(Entity other) {			
+			hitbox.setBounds((int) ((x < other.getX()) ? x+width/2 : x - width/2) , (int) (y + height/5), (int) width, (int) height);
+			return hitbox.intersects(other.getX(), other.getY(), other.getWidtH(),
+					other.getHeight());
+		}
+
+	
+	
 
 	@Override
 	public void draw() {

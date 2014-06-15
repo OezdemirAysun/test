@@ -20,6 +20,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import entities.AbstractMoveableEntity;
+import entities.Entity;
 
 public class Enemy extends AbstractMoveableEntity {
 	private Texture texture = null;
@@ -61,6 +62,11 @@ public class Enemy extends AbstractMoveableEntity {
 			e.printStackTrace();
 		}
 	}
+	
+
+
+	
+	
 
 	@Override
 	public void draw() {

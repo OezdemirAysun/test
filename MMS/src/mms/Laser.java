@@ -19,6 +19,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import entities.AbstractMoveableEntity;
+import entities.Entity;
 
 public class Laser extends AbstractMoveableEntity {
 	private Texture texture = null;
@@ -33,6 +34,21 @@ public class Laser extends AbstractMoveableEntity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public boolean intersects(Entity other) {
+		if(other instanceof Boss){
+			hitbox.setBounds((int) (x< other.getX() ? x - width/2 : x) , (int) (y), (int) width, (int) height);
+			return hitbox.intersects(other.getX(), other.getY(), other.getWidtH() -400,
+					other.getHeight()-100);
+		}else{
+		hitbox.setBounds((int) ((x < other.getX()) ? x - width / 2 : x + width
+				/ 2), (int) (y + height / 5), (int) width, (int) height);
+		return hitbox.intersects(other.getX(), other.getY(), other.getWidtH(),
+				other.getHeight());
+		}
+
 	}
 
 	@Override

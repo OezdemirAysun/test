@@ -17,9 +17,10 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import entities.AbstractMoveableEntity;
+import entities.Entity;
 
 public class Obstacle extends AbstractMoveableEntity {
-	
+
 	private Texture obst1 = null;
 	private Texture obst2 = null;
 	private Texture obst3 = null;
@@ -57,6 +58,15 @@ public class Obstacle extends AbstractMoveableEntity {
 		}
 	}
 
+//	@Override
+//	public boolean intersects(Entity other) {
+//		hitbox.setBounds((int) (this.getX()-this.getWidtH()/5) , (int) (this.getY()-this.getHeight()/5), (int) width, (int) height);
+//		return hitbox.intersects(other.getX(), other.getY(), other.getWidtH(),
+//				other.getHeight());
+//	}
+	
+	
+
 	@Override
 	public void draw() {
 		obst1.bind();
@@ -91,9 +101,9 @@ public class Obstacle extends AbstractMoveableEntity {
 			obst6.bind();
 		} else if (i < 64) {
 			obst7.bind();
-		} else{
+		} else {
 			obst8.bind();
-	
+
 			if (i == 72) {
 				i = -1;
 			}
