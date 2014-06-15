@@ -63,12 +63,11 @@ public class Player extends AbstractMoveableEntity {
 			return hitbox.intersects(other.getX(), other.getY(), other.getWidtH(),
 					other.getHeight());
 		}else {		
-			hitbox.setBounds((int) ((x < other.getX()) ? x-width/2 : x + width/2) , (int) (y + height/5), (int) width, (int) height);
+			hitbox.setBounds((int) ((x < other.getX()) ? x-width/2 : x + width/3) , (int) (y + height/5), (int) width, (int) height);
 			return hitbox.intersects(other.getX(), other.getY(), other.getWidtH(),
 					other.getHeight());
 		}
 	}
-	
 	
 
 	@Override

@@ -68,19 +68,30 @@ public class Main {
 
 	private int leftMidRight = 1;
 
-	private Audio audioEffect;
+	private Audio laserShotSound;
+	private Audio explosionSound;
+	private Audio gameOverSound1;
+	private Audio gameOverSound2;
+	private Audio gimmickSound1;
+	private Audio gimmickSound2;
+	private Audio backGroundMusic;
+	private Audio victoryMusic;
+
 	private Audio audioEffect2;
+
+	private boolean playGameOverSound = true;
 
 	private static int PREF_DISPLAY_WIDTH = 1024;
 	private static int PREF_DISPLAY_HEIGHT = 720;
 	private static UnicodeFont font;
 	private static UnicodeFont font2;
 	private static UnicodeFont font3;
+	private static UnicodeFont fontGameOver;
 	private static DecimalFormat formatter = new DecimalFormat("#.##");
 	private int actualScore = 0;
 	private Highscore highscore;
 	private int highscoreInt = 0;
-	private int bossLive = 10;
+	private int bossLive = 50;
 
 	// private Background[] backgroundArray = new Background[2];
 	private Background thisBG;
@@ -103,6 +114,10 @@ public class Main {
 	private Live liveImage;
 	private int liveCounter = 3;
 	private int i = 20;
+	private int counterGameOver = 100;
+	private Explosion explosionLast;
+	private Explosion explosionLast2 = null;
+	private Explosion explosionLast3 = null;
 
 	public Main() {
 		try {
@@ -183,13 +198,6 @@ public class Main {
 		boss = new Boss(300, -1000, 800, 400);
 		boss.setDY(0.05);
 
-		try {
-			audioEffect = AudioLoader.getAudio("WAV",
-					ResourceLoader.getResourceAsStream("res/laser_Shoot.wav"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		// try{
 		// audioEffect = AudioLoader.getAudio("WAV",
 		// ResourceLoader.getResourceAsStream("res/background_musik.wav"));
@@ -202,6 +210,10 @@ public class Main {
 
 		setUpTimer();
 		setUpFonts();
+		setUpSounds();
+
+		backGroundMusic.playAsMusic(1f, 1f, false);
+		// backGroundMusic.
 
 		// methode
 		highscore = new Highscore();
@@ -227,32 +239,44 @@ public class Main {
 			// background.draw();
 
 			if (!running) {
-				drawMenuScreen();
 				if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 					Display.destroy();
 					AL.destroy();
 					System.exit(0);
 				}
-				if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-					running = true;
-					TimerTask enemyWave = new TimerTask() {
-						public void run() {
-							enemyWaveBoolean = true;
-						}
-					};
-					Timer TimerEnemyWaves = new Timer();
-					TimerEnemyWaves.schedule(enemyWave, 5000, 5000);
-					// 2ter parameter is wann des startet, 3ter is wann des
-					// wiederholt wird
-					// wenn man nur zb enemyWave und 5000 angibt wird es net
-					// wiederholt sondern nur einmal nach 5000millisek, also
-					// 5sek gestartet
+				if (!playerAlive) {
+					// System.out.println("game over");
+					if (playGameOverSound) {
+						gameOverSound1.playAsMusic(1f, 1f, false);
+						gameOverSound2.playAsSoundEffect(1f, 1f, false);
+						playGameOverSound = false;
+					}
+					drawGameOverScreen();
 
-					// try {
-					// Thread.sleep(2000);
-					// } catch (InterruptedException e) {
-					// e.printStackTrace();
-					// }
+				} else {
+					drawMenuScreen();
+
+					if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+						running = true;
+						TimerTask enemyWave = new TimerTask() {
+							public void run() {
+								enemyWaveBoolean = true;
+							}
+						};
+						Timer TimerEnemyWaves = new Timer();
+						TimerEnemyWaves.schedule(enemyWave, 5000, 5000);
+						// 2ter parameter is wann des startet, 3ter is wann des
+						// wiederholt wird
+						// wenn man nur zb enemyWave und 5000 angibt wird es net
+						// wiederholt sondern nur einmal nach 5000millisek, also
+						// 5sek gestartet
+
+						// try {
+						// Thread.sleep(2000);
+						// } catch (InterruptedException e) {
+						// e.printStackTrace();
+						// }
+					}
 				}
 			}
 
@@ -270,8 +294,8 @@ public class Main {
 
 					for (Enemy enemy : enemies) {
 						enemyLaserShots.add(new EnemyLaser(enemy.getX()
-								+ enemy.getWidtH() / 2 - 11, enemy.getY(), 10,
-								20));
+								+ enemy.getWidtH() / 2 - 11, enemy.getY(), 30,
+								40));
 					}
 					enemyWaveBoolean = false;
 				}
@@ -312,12 +336,37 @@ public class Main {
 				if (!bossDeath) {
 					boss.draw();
 					boss.update(delta);
-				}else{
-					boss.setY(-1000); 
-					boss.setX(-1000); 
+				} else {
+					boss.setDX(0);
+					boss.setDY(0); 
+					expl.setX(boss.getX());
+					expl.setY(boss.getY()); 
+					expl.setHeight(600);
+					expl.setWidth(600); 
+
+					expl.draw3(); 
+					expl.update(delta); 
+
+					explosionSound.playAsSoundEffect(1f, 1f, false);
 					
+					
+//					
+				TimerTask wait = new TimerTask() {
+					public void run() {
+
+						 boss.setY(-1000);
+						 boss.setX(-1000);					}
+				};
+				Timer TimerWaitSet = new Timer();
+				TimerWaitSet.schedule(wait, 1000);
+
+				expl.setHeight(100); 
+				expl.setWidth(100); 
+					
+
+
 				}
-				
+
 				for (HomingMissile hm : homingMissiles) {
 					hm.draw();
 					hm.update(delta);
@@ -342,7 +391,7 @@ public class Main {
 					obstacle.update(delta);
 				}
 
-				if (!explosionColl) {
+				if (!explosionColl && playerAlive) {
 					// player.draw2(leftMidRight);
 					player.draw();
 					player.update(delta);
@@ -352,8 +401,12 @@ public class Main {
 					expl.setX(player.getX());
 					expl.setY(player.getY());
 					expl.draw2();
+					// if(i==19){
+					// explosionSound.playAsSoundEffect(1f, 1f, false);
+					// }
 					i--;
 					if (i == 0) {
+
 						explosionColl = false;
 					}
 
@@ -415,6 +468,40 @@ public class Main {
 
 				checkAlive();
 
+				// if (!playerAlive && counterGameOver == 100) {
+				//
+				// }
+				if (!playerAlive) {
+					if (counterGameOver == 100) {
+						explosionLast = new Explosion(player.getX(),
+								player.getY(), 500, 500);
+					}
+					if (counterGameOver == 80) {
+						explosionLast2 = new Explosion(player.getX() - 200,
+								player.getY(), 500, 500);
+					}
+					if (counterGameOver == 50) {
+						explosionLast2 = new Explosion(player.getX() - 100,
+								player.getY() - 100, 500, 500);
+					}
+
+					counterGameOver--;
+
+					explosionLast.draw2();
+					explosionLast.update(delta);
+					if (explosionLast2 != null) {
+						explosionLast2.draw2();
+						explosionLast2.update(delta);
+					}
+					if (explosionLast3 != null) {
+						explosionLast3.draw2();
+						explosionLast3.update(delta);
+					}
+				}
+				if (counterGameOver == 0) {
+					running = false;
+				}
+
 			}
 			Display.update();
 			Display.sync(60);
@@ -429,6 +516,29 @@ public class Main {
 	// laser.setY(player.getY());
 	//
 	// }
+
+	private void setUpSounds() {
+		try {
+			laserShotSound = AudioLoader.getAudio("WAV",
+					ResourceLoader.getResourceAsStream("res/laser_Shoot.wav"));
+			explosionSound = AudioLoader.getAudio("WAV",
+					ResourceLoader.getResourceAsStream("res/Explosion6.wav"));
+			gameOverSound1 = AudioLoader.getAudio("WAV",
+					ResourceLoader.getResourceAsStream("res/GameOver.wav"));
+			gameOverSound2 = AudioLoader.getAudio("WAV",
+					ResourceLoader.getResourceAsStream("res/GameOver2.wav"));
+			gimmickSound1 = AudioLoader.getAudio("WAV",
+					ResourceLoader.getResourceAsStream("res/Powerup11.wav"));
+			gimmickSound2 = AudioLoader.getAudio("WAV",
+					ResourceLoader.getResourceAsStream("res/speed.wav"));
+			backGroundMusic = AudioLoader.getAudio("WAV", ResourceLoader
+					.getResourceAsStream("res/JumpUpAndBounceDown.wav"));
+			victoryMusic = AudioLoader.getAudio("WAV",
+					ResourceLoader.getResourceAsStream("res/victory.wav"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void checkLaserOutOfScreen() {
 		for (Laser laser : laserShots) {
@@ -465,11 +575,11 @@ public class Main {
 
 	private void input() {
 		// while (Keyboard.next()) {
-		if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
-			// das is GAME OVER nicht keyboard P
-			highscore.setHighscore(actualScore);
-
-		}
+		// if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
+		// // das is GAME OVER nicht keyboard P
+		// highscore.setHighscore(actualScore);
+		//
+		// }
 		// if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			highscore.setHighscore(actualScore);
@@ -561,7 +671,12 @@ public class Main {
 					&& Keyboard.getEventKeyState()) {
 				laserShots.add(new Laser(player.getX() + player.getWidtH() / 2
 						- 23, player.getY(), 10, 20));
-				audioEffect.playAsSoundEffect(1f, 1f, false);
+				laserShotSound.playAsSoundEffect(1f, 1f, false);
+			}
+			if (!explosionColl && Keyboard.getEventKey() == Keyboard.KEY_P
+					&& Keyboard.getEventKeyState()) {
+				liveCounter++;
+				victoryMusic.playAsMusic(1f, 1f, false);
 			}
 			SoundStore.get().poll(0);
 		}
@@ -575,6 +690,8 @@ public class Main {
 				java.awt.Font.BOLD, 50);
 		java.awt.Font awtFont3 = new java.awt.Font("Comic Sans MS",
 				java.awt.Font.BOLD, 50);
+		java.awt.Font awtfontGameOver = new java.awt.Font("Comic Sans MS",
+				java.awt.Font.BOLD, 50);
 		font = new UnicodeFont(awtFont);
 		font.getEffects().add(new ColorEffect(java.awt.Color.YELLOW));
 		font.addAsciiGlyphs();
@@ -584,10 +701,14 @@ public class Main {
 		font3 = new UnicodeFont(awtFont3);
 		font3.getEffects().add(new ColorEffect(java.awt.Color.RED));
 		font3.addAsciiGlyphs();
+		fontGameOver = new UnicodeFont(awtFont3);
+		fontGameOver.getEffects().add(new ColorEffect(java.awt.Color.RED));
+		fontGameOver.addAsciiGlyphs();
 		try {
 			font.loadGlyphs();
 			font2.loadGlyphs();
 			font3.loadGlyphs();
+			fontGameOver.loadGlyphs();
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -596,14 +717,26 @@ public class Main {
 	private void fonts() {
 		font.drawString(10, 10, Integer.toString(actualScore));
 		font.drawString(750, 10, "Highscore: " + Integer.toString(highscoreInt));
-		font3.drawString(5, PREF_DISPLAY_HEIGHT-65, Integer.toString(liveCounter));
+		font3.drawString(5, PREF_DISPLAY_HEIGHT - 65,
+				Integer.toString(liveCounter));
 	}
 
 	private void drawMenuScreen() {
 		font2.drawString(PREF_DISPLAY_WIDTH / 6, PREF_DISPLAY_HEIGHT / 2 - 100,
 				"Press RETURN to start game");
 		font2.drawString(PREF_DISPLAY_WIDTH / 6, PREF_DISPLAY_HEIGHT / 2,
-				"Zum Starten ENTER drücken");
+				"Zum Starten ENTER druecken");
+	}
+
+	private void drawGameOverScreen() {
+		highscore.setHighscore(actualScore);
+		fontGameOver.drawString(PREF_DISPLAY_WIDTH / 6,
+				PREF_DISPLAY_HEIGHT / 2 - 100, "GAME OVER");
+		fontGameOver.drawString(PREF_DISPLAY_WIDTH / 6,
+				PREF_DISPLAY_HEIGHT / 2, "Your Score: " + actualScore);
+		fontGameOver.drawString(PREF_DISPLAY_WIDTH / 6,
+				PREF_DISPLAY_HEIGHT / 2 + 100,
+				"Highscore: " + highscore.getHighscore());
 	}
 
 	private void checkColl() {
@@ -615,11 +748,13 @@ public class Main {
 					expl.setX(enemy.getX());
 					expl.setY(enemy.getY());
 					expl.draw();
+					expl.update(delta); 
 
 					laserShots.remove(laser);
 					enemies.remove(enemy);
 					actualScore += 10;
 					collDetected = true;
+					explosionSound.playAsSoundEffect(1f, 1f, false);
 					break outerLoop;
 				}
 			}
@@ -630,12 +765,16 @@ public class Main {
 
 		for (Laser laser : laserShots) {
 			if (laser.intersects(boss)) {
-				if(!bossDeath){
-					expl.setX(laser.getX()-50);
-					expl.setY(laser.getY()-50);
+				if (!bossDeath) {
+					expl.setX(laser.getX() - 50);
+					expl.setY(laser.getY() - 50);
 					expl.draw();
+					expl.update(delta); 
+
+					explosionSound.playAsSoundEffect(1f, 1f, false);
+
 				}
-				
+
 				laserShots.remove(laser);
 				bossLive--;
 				collDetected = true;
@@ -653,6 +792,8 @@ public class Main {
 					expl.setX(homingM.getX());
 					expl.setY(homingM.getY());
 					expl.draw();
+					expl.update(delta); 
+
 					laserShots.remove(laser);
 					homingMissiles.remove(homingM);
 					actualScore += 10;
@@ -670,6 +811,8 @@ public class Main {
 				gimColl = true;
 				gimmicks.remove(gimmick);
 				turbo = 10;
+				gimmickSound1.playAsSoundEffect(1f, 1f, false);
+				// gimmickSound2.playAsSoundEffect(1f, 1f, false);
 				break;
 			}
 		}
@@ -678,6 +821,7 @@ public class Main {
 			if (player.intersects(obstacle)) {
 				obstacles.remove(obstacle);
 				explosionColl = true;
+				explosionSound.playAsSoundEffect(1f, 1f, false);
 				decreaseLive();
 			}
 		}
@@ -690,12 +834,14 @@ public class Main {
 				expl.setX(player.getX());
 				expl.setY(player.getY());
 				expl.draw2();
+				expl.update(delta); 
 
 				enemies.remove(enemy);
 
 				explosionColl = true;
 				i = 20;
 				collDetected4 = true;
+				explosionSound.playAsSoundEffect(1f, 1f, false);
 				decreaseLive();
 				break outerLoop;
 
@@ -709,6 +855,7 @@ public class Main {
 			if (player.intersects(homingM)) {
 				homingMissiles.remove(homingM);
 				explosionColl = true;
+				explosionSound.playAsSoundEffect(1f, 1f, false);
 				decreaseLive();
 			}
 		}
@@ -718,8 +865,12 @@ public class Main {
 			expl.setX(player.getX());
 			expl.setY(player.getY());
 			expl.draw2();
+			expl.update(delta); 
+
+
 			// }
 			explosionColl = true;
+			explosionSound.playAsSoundEffect(1f, 1f, false);
 			decreaseLive();
 
 		}
@@ -733,11 +884,13 @@ public class Main {
 				expl.setX(player.getX());
 				expl.setY(player.getY());
 				expl.draw2();
+				expl.update(delta); 
 
 				// }
 				enemyLaserShots.remove(enemyLaser);
 				explosionColl = true;
 				collDetected3 = true;
+				explosionSound.playAsSoundEffect(1f, 1f, false);
 				decreaseLive();
 				break outerLoop;
 			}
@@ -757,7 +910,8 @@ public class Main {
 	private void checkAlive() {
 		if (liveCounter <= 0) {
 			playerAlive = false;
-			running = false;
+			// running = false;
+			// counterGameOver = 100;
 		}
 	}
 

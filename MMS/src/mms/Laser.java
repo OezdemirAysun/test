@@ -39,7 +39,7 @@ public class Laser extends AbstractMoveableEntity {
 	@Override
 	public boolean intersects(Entity other) {
 		if(other instanceof Boss){
-			hitbox.setBounds((int) (x< other.getX() ? x - width/2 : x) , (int) (y), (int) width, (int) height);
+			hitbox.setBounds((int) (x < other.getX() ? x - width/2 : x) , (int) (y), (int) width, (int) height);
 			return hitbox.intersects(other.getX(), other.getY(), other.getWidtH() -400,
 					other.getHeight()-100);
 		}else{
