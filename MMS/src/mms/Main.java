@@ -73,6 +73,7 @@ public class Main {
 	private Audio explosionSound;
 	private Audio gameOverSound1;
 	private Audio gameOverSound2;
+	private Audio bossDeathSound; 
 	private Audio gimmickSound1;
 	private Audio gimmickSound2;
 	private Audio backGroundMusic;
@@ -606,7 +607,9 @@ public class Main {
 				} else {
 
 					if (playBossDeathSound) {
-						explosionSound.playAsSoundEffect(1f, 1f, false);
+//						explosionSound.playAsSoundEffect(1f, 1f, false);
+						bossDeathSound.playAsSoundEffect(1f, 1f, false); 
+						
 						playBossDeathSound = false;
 					}
 					boss.setDX(0);
@@ -810,6 +813,8 @@ public class Main {
 					.getResourceAsStream("res/JumpUpAndBounceDown.wav"));
 			victoryMusic = AudioLoader.getAudio("WAV",
 					ResourceLoader.getResourceAsStream("res/victory.wav"));
+			bossDeathSound = AudioLoader.getAudio("WAV",
+					ResourceLoader.getResourceAsStream("res/bossExplosion.wav"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -958,7 +963,7 @@ public class Main {
 				gimColl = false;
 			}
 
-			if (player.getY() < 635) {
+			if (player.getY() < PREF_DISPLAY_HEIGHT-player.getHeight()*0.85) {
 				player.setY(player.getY() + turbo);
 			}
 
@@ -988,7 +993,7 @@ public class Main {
 				steps = 0;
 				gimColl = false;
 			}
-			if (player.getX() < 960) {
+			if (player.getX() < PREF_DISPLAY_WIDTH-player.getWidtH()*0.65) {
 				player.setX(player.getX() + turbo);
 				leftMidRight = 2;
 			}
