@@ -59,11 +59,11 @@ public class Player extends AbstractMoveableEntity {
 					other.getHeight()-100);
 		}else if( other instanceof HomingMissile){
 			
-			hitbox.setBounds((int) ((x < other.getX()) ? x-width/2 : x +width) , (int) (y + height), (int) width, (int) height);
+			hitbox.setBounds((int) ((x < other.getX()) ? x-width/2 : x +width) , (int) (y + height), (int) width, (int) (height - height/2));
 			return hitbox.intersects(other.getX(), other.getY(), other.getWidtH(),
 					other.getHeight());
 		}else {		
-			hitbox.setBounds((int) ((x < other.getX()) ? x-width/2 : x + width/3) , (int) (y + height/5), (int) width, (int) height);
+			hitbox.setBounds((int) ((x < other.getX()) ? x-width/2 : x + width/3) , (int) (y + height/5), (int) width, (int) (height - height/2));
 			return hitbox.intersects(other.getX(), other.getY(), other.getWidtH(),
 					other.getHeight());
 		}

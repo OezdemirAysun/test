@@ -42,9 +42,9 @@ public class EnemyLaser extends AbstractMoveableEntity{
 	
 	@Override
 	public boolean intersects(Entity other) {
-		hitbox.setBounds((int)x, (int) (y), (int) width, (int) height);
-		return hitbox.intersects(other.getX(), other.getY(), (x > other.getWidtH()) ? other.getWidtH() - other.getWidtH()/2 : other.getWidtH(),
-				other.getHeight());
+		hitbox.setBounds((int)((x < other.getX()) ? x - width/2 : x) , (int)( y - height/2), (int) width, (int) height);
+		return hitbox.intersects(other.getX(), other.getY(), (other.getX() < x ) ? other.getWidtH()-other.getWidtH()/2 : other.getWidtH(),
+				other.getHeight()-other.getHeight()/5);
 	}
 
 	@Override
