@@ -1,4 +1,3 @@
-
 package mms;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -93,15 +92,17 @@ public class Main {
 	private boolean enemyWaveBetween5Boolean = false;
 	private boolean shotsFiredBoolean = false;
 
+	private boolean spawnHomingMissile = false;
+
 	private boolean playerAlive = true;
 	private Live liveImage;
-	private int liveCounter = 3;
+	private int liveCounter = 9;
 	private int animationTime = 20;
 	private int counterGameOver = 100;
 	private Explosion explosionLast;
 	private Explosion explosionLast2 = null;
 	private Explosion explosionLast3 = null;
-	Random rng = new Random();
+	private Random rng = new Random();
 
 	private Enemy e1, e2, e3, e4, e5, e6, e7, e8, e9, e10;
 
@@ -147,15 +148,12 @@ public class Main {
 
 			if (!running) {
 				if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-					Display.destroy();
-					AL.destroy();
-					System.exit(0);
+					exit();
+
 				}
 				if (!playerAlive) {
 					if (playGameOverSound) {
-						gameOverSound1.playAsMusic(1f, 1f, false);
-						gameOverSound2.playAsSoundEffect(1f, 1f, false);
-						playGameOverSound = false;
+						playGameOverSound();
 					}
 					drawGameOverScreen();
 
@@ -172,11 +170,8 @@ public class Main {
 			}
 
 			if (running) {
-				objectWaveBoolean(); 
-				createEnemyLaser(); 
-				
-				
-				
+				objectWaveBoolean();
+				createEnemyLaser();
 
 				// TODO Auto-generated catch block
 				bossMovement();
@@ -187,7 +182,7 @@ public class Main {
 				if (!bossDeath) {
 
 					if (bossTime) {
-						 drawBoss();	
+						drawBoss();
 					}
 
 				} else {
@@ -195,27 +190,21 @@ public class Main {
 					bossDeath();
 				}
 
-				 drawHomingMissiles();
-				
+				drawHomingMissiles();
 
-				 drawEnemies();
-				
+				drawEnemies();
 
-				 drawGimmicks();
-				
+				drawGimmicks();
 
-				 drawObstacles();
-				
+				drawObstacles();
 
-				 drawPlayer();
-				
-				 generateBackgroundLoop();
-				
-				 drawLaserShots();
-				
+				drawPlayer();
 
-				 drawEnemyLaserShots();
-				
+				generateBackgroundLoop();
+
+				drawLaserShots();
+
+				drawEnemyLaserShots();
 
 				input();
 				input2();
@@ -227,14 +216,13 @@ public class Main {
 
 				homing();
 
-				 drawLiveImage();
-			
+				drawLiveImage();
 
 				checkAlive();
 
 				if (!playerAlive) {
-					 drawPlayerBigExplosion();
-					
+					drawPlayerBigExplosion();
+
 				}
 				if (counterGameOver == 0) {
 					running = false;
@@ -246,27 +234,42 @@ public class Main {
 			Display.update();
 			Display.sync(60);
 		}
+		exit();
+	}
+
+	private void exit() {
 		Display.destroy();
 		AL.destroy();
 		System.exit(0);
+	}
+
+	private void playGameOverSound() {
+		gameOverSound1.playAsMusic(1f, 1f, false);
+		gameOverSound2.playAsSoundEffect(1f, 1f, false);
+		playGameOverSound = false;
 	}
 
 	private void createEnemyLaser() {
 		if (shotsFiredBoolean) {
 			for (Enemy enemy : enemies) {
 				EnemyLaser temp = new EnemyLaser(enemy.getX()
-						+ enemy.getWidtH() / 2 - 20, enemy.getY(), 30,
-						40);
+						+ enemy.getWidtH() / 2 - 20, enemy.getY(), 30, 40);
 				temp.setDY(rng.nextDouble() / 2 + 0.08);
 				enemyLaserShots.add(temp);
 
 			}
 			shotsFiredBoolean = false;
-		}		
+		}
 	}
 
-
 	private void objectWaveBoolean() {
+		if (spawnHomingMissile) {
+			homingMissiles.add(new HomingMissile(boss.getX() + boss.getWidtH()
+					/ 4, boss.getY() + boss.getHeight() / 4, 150, 150));
+			homingMissiles.add(new HomingMissile(boss.getX() + boss.getWidtH()
+					/ 4 + 135, boss.getY() + boss.getHeight() / 4, 150, 150));
+			spawnHomingMissile = false;
+		}
 		if (obstacleWaveBoolean) {
 
 			for (int i = 0; i <= 20; i = i + 5) {
@@ -278,8 +281,8 @@ public class Main {
 
 				}
 			}
+			obstacleWaveBoolean = false;
 		}
-		obstacleWaveBoolean = false;
 
 		if (gimmickWaveBoolean) {
 			for (int i = 0; i <= 20; i = i + 5) {
@@ -371,7 +374,7 @@ public class Main {
 				}
 			}
 			enemyWave5Boolean = false;
-		}	
+		}
 		if (enemyWaveBetween1Boolean) {
 			e1 = new Enemy(-120, 50, 120, 120, 5);
 			e1.setDX(0.05);
@@ -414,8 +417,7 @@ public class Main {
 			enemyWaveBetween4Boolean = false;
 		}
 		if (enemyWaveBetween5Boolean) {
-			e10 = new Enemy(PREF_DISPLAY_WIDTH / 2 - 100, 0, 200, 200,
-					1);
+			e10 = new Enemy(PREF_DISPLAY_WIDTH / 2 - 100, 0, 200, 200, 1);
 			e10.setDY(0.01);
 			enemies.add(e10);
 			enemyWaveBetween5Boolean = false;
@@ -424,14 +426,14 @@ public class Main {
 
 	private void drawBoss() {
 		boss.draw();
-		boss.update(delta);		
+		boss.update(delta);
 	}
 
 	private void drawHomingMissiles() {
 		for (HomingMissile hm : homingMissiles) {
 			hm.draw();
 			hm.update(delta);
-		}		
+		}
 	}
 
 	private void drawEnemies() {
@@ -442,21 +444,21 @@ public class Main {
 			enemy.draw();
 			enemy.update(delta);
 
-		}		
+		}
 	}
 
 	private void drawGimmicks() {
 		for (Gimmick gimmick : gimmicks) {
 			gimmick.draw();
 			gimmick.update(delta);
-		}		
+		}
 	}
 
 	private void drawObstacles() {
 		for (Obstacle obstacle : obstacles) {
 			obstacle.draw();
 			obstacle.update(delta);
-		}		
+		}
 	}
 
 	private void drawPlayer() {
@@ -466,23 +468,24 @@ public class Main {
 
 		} else {
 
-			 drawPlayerExplosion();
-			
+			drawPlayerExplosion();
+
 		}
-		
+
 	}
 
 	private void drawPlayerExplosion() {
-		expl.setX(player.getX());
-		expl.setY(player.getY());
-		expl.draw2();			
-		expl.update(delta); 
+			expl.setX(player.getX());
+			expl.setY(player.getY());
+			expl.draw2();
+			expl.update(delta);
+		
 		animationTime--;
 		if (animationTime == 0) {
 
 			explosionColl = false;
 		}
-		
+
 	}
 
 	private void generateBackgroundLoop() {
@@ -495,7 +498,7 @@ public class Main {
 		if (backgroundLoop.size() > 2) {
 			backgroundLoop.remove(0);
 		}
-		
+
 	}
 
 	private void drawLaserShots() {
@@ -503,29 +506,29 @@ public class Main {
 			laser.draw();
 			laser.update(delta);
 			laser.setDY(-0.2);
-		}		
+		}
 	}
 
 	private void drawEnemyLaserShots() {
 		for (EnemyLaser enemyLaser : enemyLaserShots) {
 			enemyLaser.draw();
 			enemyLaser.update(delta);
-		}		
+		}
 	}
 
 	private void drawLiveImage() {
 		liveImage.draw();
-		liveImage.update(delta);		
+		liveImage.update(delta);
 	}
 
 	private void drawPlayerBigExplosion() {
 		if (counterGameOver == 100) {
-			explosionLast = new Explosion(player.getX(),
-					player.getY(), 500, 500);
+			explosionLast = new Explosion(player.getX(), player.getY(), 500,
+					500);
 		}
 		if (counterGameOver == 80) {
-			explosionLast2 = new Explosion(player.getX() - 200,
-					player.getY(), 500, 500);
+			explosionLast2 = new Explosion(player.getX() - 200, player.getY(),
+					500, 500);
 		}
 		if (counterGameOver == 50) {
 			explosionLast2 = new Explosion(player.getX() - 100,
@@ -543,7 +546,7 @@ public class Main {
 		if (explosionLast3 != null) {
 			explosionLast3.draw2();
 			explosionLast3.update(delta);
-		}		
+		}
 	}
 
 	private void drawBackGroundLoop() {
@@ -556,7 +559,7 @@ public class Main {
 
 	private void bossDeath() {
 		if (playBossDeathSound) {
-			
+
 			bossDeathSound.playAsSoundEffect(1f, 1f, false);
 			victoryMusic.playAsMusic(1f, 1f, false);
 			victory = true;
@@ -681,6 +684,12 @@ public class Main {
 				shotsFiredBoolean = true;
 			}
 		};
+		TimerTask spawnHomingMissiles = new TimerTask() {
+			public void run() {
+				spawnHomingMissile = true;
+			}
+		};
+
 		Timer TimerEnemyWaves = new Timer();
 		TimerEnemyWaves.schedule(enemyWave1, 5000, 50000);
 		TimerEnemyWaves.schedule(enemyWave2, 15000, 50000);
@@ -694,6 +703,8 @@ public class Main {
 		TimerEnemyWaves.schedule(enemyWaveBetween4, 40000, 50000);
 		TimerEnemyWaves.schedule(enemyWaveBetween5, 50000, 50000);
 		TimerEnemyWaves.schedule(shotsFiredWave, 6000, 4000);
+
+		TimerEnemyWaves.schedule(spawnHomingMissiles, 62000, 3000);
 
 		Timer ObstacleWaves = new Timer();
 		ObstacleWaves.schedule(osbtacleWave, 0, 20000);
@@ -742,20 +753,28 @@ public class Main {
 	}
 
 	private void checkLaserOutOfScreen() {
-		for (Laser laser : laserShots) {
+		boolean check = false;
+		outerLoop: for (Laser laser : laserShots) {
 			if (laser.getY() < 0) {
 				laserShots.remove(laser);
-				break;
+				break outerLoop;
 			}
+		}
+		if (check) {
+			checkLaserOutOfScreen();
 		}
 	}
 
 	private void checkEnemyLaserOutOfScreen() {
-		for (EnemyLaser enemyLaser : enemyLaserShots) {
+		boolean check = false;
+		outerLoop: for (EnemyLaser enemyLaser : enemyLaserShots) {
 			if (enemyLaser.getY() > PREF_DISPLAY_WIDTH) {
 				laserShots.remove(enemyLaser);
-				break;
+				break outerLoop;
 			}
+		}
+		if (check) {
+			checkEnemyLaserOutOfScreen();
 		}
 	}
 
@@ -813,24 +832,13 @@ public class Main {
 
 	}
 
-	private void checkHomingMissileOutOfScreen() {
-		for (HomingMissile homingM : homingMissiles) {
-			if (homingM.getY() > PREF_DISPLAY_WIDTH
-					|| homingM.getX() > PREF_DISPLAY_HEIGHT
-					|| homingM.getY() < 0) {
-				homingMissiles.remove(homingM);
-			}
-		}
-
-	}
-
+	
 	private void checkObjectsOutOfScreen() {
 		checkLaserOutOfScreen();
 		checkEnemyLaserOutOfScreen();
 		checkEnemyOutOfScreen();
 		checkObstacleOutOfScreen();
 		checkGimmickOutOfScreen();
-		checkHomingMissileOutOfScreen();
 	}
 
 	private void setUpTimer() {
@@ -850,10 +858,7 @@ public class Main {
 
 	private void input() {
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-			highscore.setHighscore(actualScore);
-			Display.destroy();
-			AL.destroy();
-			System.exit(0);
+			exit();
 		}
 
 		if (!explosionColl && !victory && Keyboard.isKeyDown(Keyboard.KEY_W)) {
@@ -928,6 +933,10 @@ public class Main {
 			if (!explosionColl && Keyboard.getEventKey() == Keyboard.KEY_P
 					&& Keyboard.getEventKeyState()) {
 				liveCounter++;
+			}
+			if (Keyboard.getEventKey() == Keyboard.KEY_J
+					&& Keyboard.getEventKeyState()) {
+				bossDeath = true;
 			}
 			SoundStore.get().poll(0);
 		}
@@ -1053,7 +1062,7 @@ public class Main {
 					expl.setY(homingM.getY());
 					expl.draw();
 					expl.update(delta);
-
+					explosionSound.playAsSoundEffect(1f, 1f, false);
 					laserShots.remove(laser);
 					homingMissiles.remove(homingM);
 					actualScore += 10;
@@ -1119,17 +1128,26 @@ public class Main {
 			checkColl();
 		}
 
-		for (HomingMissile homingM : homingMissiles) {
-			if (player.intersects(homingM)) {
+		boolean collDetected7 = false;
+		outerLoop: for (HomingMissile homingM : homingMissiles) {
+			if (homingM != null && player.intersects(homingM)) {
+				expl.setX(player.getX());
+				expl.setY(player.getY());
+				expl.draw2();
+				expl.update(delta);
 				homingMissiles.remove(homingM);
 				explosionColl = true;
 				explosionSound.playAsSoundEffect(1f, 1f, false);
 				decreaseLive();
+				break outerLoop;
 			}
+		}
+		if (collDetected7) {
+			checkColl();
 		}
 
 		if (player.intersects(boss)) {
-			
+
 			expl.setX(player.getX());
 			expl.setY(player.getY());
 			expl.draw2();
@@ -1137,10 +1155,12 @@ public class Main {
 			explosionColl = true;
 			explosionSound.playAsSoundEffect(1f, 1f, false);
 			decreaseLive();
-			player.setX(PREF_DISPLAY_WIDTH / 2 - 50); 
+			player.setX(PREF_DISPLAY_WIDTH / 2 - 50);
 			player.setY(PREF_DISPLAY_HEIGHT - 100);
 
 		}
+		
+		
 
 		boolean collDetected3 = false;
 		outerLoop: for (EnemyLaser enemyLaser : enemyLaserShots) {
@@ -1181,19 +1201,21 @@ public class Main {
 		if (!explosionColl) {
 			int threshold = 1;
 			for (HomingMissile homingM : homingMissiles) {
-				if (homingM.getX() > player.getX() + threshold) {
-					homingM.setDX(-0.1);
-				} else if (homingM.getX() < player.getX() - threshold) {
-					homingM.setDX(+0.1);
-				} else {
-					homingM.setDX(0);
-				}
-				if (homingM.getY() > player.getY() + threshold) {
-					homingM.setDY(-0.1);
-				} else if (homingM.getY() < player.getY() - threshold) {
-					homingM.setDY(+0.1);
-				} else {
-					homingM.setDY(0);
+				if (homingM != null) {
+					if (homingM.getX() > player.getX() + threshold) {
+						homingM.setDX(-0.1);
+					} else if (homingM.getX() < player.getX() - threshold) {
+						homingM.setDX(+0.1);
+					} else {
+						homingM.setDX(0);
+					}
+					if (homingM.getY() > player.getY() + threshold) {
+						homingM.setDY(-0.1);
+					} else if (homingM.getY() < player.getY() - threshold) {
+						homingM.setDY(+0.1);
+					} else {
+						homingM.setDY(0);
+					}
 				}
 			}
 		}
