@@ -17,7 +17,6 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import entities.AbstractMoveableEntity;
-import entities.Entity;
 
 public class Obstacle extends AbstractMoveableEntity {
 
@@ -58,35 +57,8 @@ public class Obstacle extends AbstractMoveableEntity {
 		}
 	}
 
-//	@Override
-//	public boolean intersects(Entity other) {
-//		hitbox.setBounds((int) (this.getX()-this.getWidtH()/5) , (int) (this.getY()-this.getHeight()/5), (int) width, (int) height);
-//		return hitbox.intersects(other.getX(), other.getY(), other.getWidtH(),
-//				other.getHeight());
-//	}
-	
-	
-
 	@Override
 	public void draw() {
-		obst1.bind();
-		glLoadIdentity();
-		glTranslated(x, y, 0);
-		glBegin(GL_QUADS);
-		// glBegin(G_)
-		glTexCoord2f(0, 0);
-		glVertex2f(0, 0);
-		glTexCoord2f(1, 0);
-		glVertex2f((float) width, 0);
-		glTexCoord2f(1, 1);
-		glVertex2f((float) width, (float) height);
-		glTexCoord2f(0, 1);
-		glVertex2f(0, (float) height);
-		glEnd();
-		glLoadIdentity();
-	}
-
-	public void draw2() {
 		if (i < 8) {
 			obst1.bind();
 		} else if (i < 16) {
@@ -112,7 +84,6 @@ public class Obstacle extends AbstractMoveableEntity {
 		glLoadIdentity();
 		glTranslated(x, y, 0);
 		glBegin(GL_QUADS);
-		// glBegin(G_)
 		glTexCoord2f(0, 0);
 		glVertex2f(0, 0);
 		glTexCoord2f(1, 0);

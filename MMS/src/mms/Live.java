@@ -2,14 +2,6 @@ package mms;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glVertex2d;
-import static org.lwjgl.opengl.GL11.glVertex2f;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,7 +33,6 @@ public class Live extends AbstractMoveableEntity {
 		glLoadIdentity();
 		glTranslated(x, y, 0);
 		glBegin(GL_QUADS);
-		// glBegin(G_)
 		glTexCoord2f(0, 0);
 		glVertex2f(0, 0);
 		glTexCoord2f(1, 0);
@@ -53,13 +44,6 @@ public class Live extends AbstractMoveableEntity {
 		glEnd();
 		glLoadIdentity();
 
-		// glColor3f(0, 1, 0);
-		// glBegin(GL_QUADS);
-		// glVertex2d(x, y);
-		// glVertex2d(x + width, y);
-		// glVertex2d(x + width, y + height);
-		// glVertex2d(x, y + height);
-		// glEnd();
 	}
 
 }

@@ -59,7 +59,7 @@ public class Highscore {
 		}
 		return highscore;
 	}
-
+	
 	public int getHighscore() {
 		return highscore;
 	}

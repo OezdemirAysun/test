@@ -2,14 +2,6 @@ package mms;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glVertex2d;
-import static org.lwjgl.opengl.GL11.glVertex2f;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
